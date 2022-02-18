@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+
+    <style>
+
+        body {
+            font-family: "Lato" , 'Times New Roman', Times, serif;
+            background-color: rgb(255, 244, 226)
+        }
+
+        .moduly {
+            display:flex;
+            width: 100%;
+            margin: 0px;
+        }
+
+        .modul1, .modul2, .modul3 {
+            margin: 10px;
+            border: 1px solid rgb(102, 103, 171);
+            padding: 10px;
+        }
+
+        .upiekszeniePrzycisku {
+            padding:10px;
+            border:none;
+            background-color:rgb(102, 103, 171);
+            color:#fff;
+            font-weight:600;
+            border-radius:5px;
+            width:100%;
+        }
+
+        .upiekszeniePol{
+            padding:10px;
+            border-radius:10px;
+            border: 2px solid #eee;
+            width: 50%;
+            overflow: scroll;
+        }
+
+        .naglowek {
+            margin: 0px;
+            padding: 60px;
+            text-align: center;
+            background: rgb(102, 103, 171);
+            color: white;
+            font-size: 40px;
+        }
+
+        .modul1 {
+            width: 25%;
+        }
+
+        .modul2 {
+            width: 25%;
+            text-align: center;
+        }
+
+        .modul3 {
+            width: 50%;
+        }
+
+        .wynikBMI {
+            font-weight: bold;
+            font-size: 20px;
+            overflow:hidden;
+
+        }
+
+        #sredniaBMI {
+            text-align: center;
+        }
+
+        .naglowkiSekcji {
+            text-align: center;
+            text-decoration: underline;
+        }
+
+    </style>
+    <title class="naglowek">Kalkulator BMI</title>
+</head>
+<body >
+    <h1 class="naglowek">Kalkulator BMI</h1>
+    <div class="moduly" >
+
+        <div class="modul1">
+            <p>Wpisz wagę (w kilogramach)</p>
+            <form action="Waga" class="wagaForm">
+                <input type="number" name="wagaBMI" class="waga upiekszeniePol">
+            </form>
+            <p>Wpisz wzrost (w centymetrach)</p>
+            <form action="WzrostForm" class="wzrostForm">
+                <input type="number" name="wzrostBMI" class="wzrost upiekszeniePol">
+            </form>
+
+            </br></br>
+
+            <button class = "przycisk upiekszeniePrzycisku">Zatwierdź</button>
+        </div>
+
+        <div class="modul2">
+            <h2 class = "naglowkiSekcji">Wynik</h2>
+            <p class="wpisanaWaga"></p>
+            <p class="wpisanyWzrost"></p>
+            <p class="wynikBMI"></p>
+            <p class="zmianaBMI"></p>
+        </div>
+        
+        <div class="modul3">
+            <h2 class = "naglowkiSekcji">Historia pomiarów</h2>
+            <ul class="wynikDoHistorii"></ul>
+            <p id = "sredniaBMI"></p>
+            
+    
+        </div>
+
+    </div>
+
+</body>
+
+<script>
+    let licznik = 0;
+    let historiaWagi = [];
+    let historiaWzrostu = [];
+    let historiaBMI = [];
+    let poprzednieBMI = 0;
+    let BMI = 0;
+    let waga = 0;
+    let wzrost = 0;
+    let nowyLi = 0;
+    let przycisk = document.querySelector(".przycisk");
+    
+    //pobrranie wagi wpisanej przez użytkownika
+    function getWaga() {
+        let waga = document.querySelector(".waga").value;
+        return waga;
+    }
+
+    //umieszczenie wagi w module wyników
+    function getWynikWagi() {
+        document.querySelector(".wpisanaWaga").innerHTML ="Twoja waga:</br>" + getWaga() + " kg "; 
+    }
+    
+    //pobranie wzrostu wpisanego przez użytkownika
+    function getWzrost() {
+        let wzrost = document.querySelector(".wzrost").value;
+        return wzrost;
+    }
+    
+    //umieszczenie wzrostu w module wyników
+    function getWynikWzrost() {
+        document.querySelector(".wpisanyWzrost").innerHTML = "Twój wzrost:</br>" + getWzrost()  + " cm ";
+        }
+
+    //porównanie wyników BMI i wyświetlenie komunikatu o zmianie lub jej braku
+    function porownanieBMI() {
+        if (poprzednieBMI < BMI && poprzednieBMI != 0) {
+                document.querySelector(".zmianaBMI").innerHTML = "Twoje BMI wzrosło!";
+        }else if (poprzednieBMI > BMI) {
+                document.querySelector(".zmianaBMI").innerHTML = "Twoje BMI spadło!";
+        }else if (poprzednieBMI == BMI) {
+                document.querySelector(".zmianaBMI").innerHTML = "Twoje BMI nie uległo zmanie!";
+            }
+
+        }
+
+
+    // wyliczenie BMI
+    function getBMI() {
+        let waga = document.querySelector(".waga").value;
+        let wzrost = document.querySelector(".wzrost").value;
+        let data = new Date();
+        
+    
+        if (waga >= 40 && waga <= 200 && wzrost>= 120 && wzrost <= 240) {
+            BMI = waga/((wzrost/100)*(wzrost/100));
+            document.querySelector(".wynikBMI").innerHTML="Twoje BMI wynosi:</br>" + BMI.toFixed(2);
+
+            porownanieBMI();
+            poprzednieBMI = BMI;
+
+
+            //dodanie wyników do historii pomiarów
+            let wynikHistorii = document.querySelector(".wynikDoHistorii");
+            licznik = licznik + 1;
+            let nowyLicznik = licznik;
+            let nowyLi = document.createElement("li");
+            nowyLi.innerHTML = "Pomiar z [" + data.toLocaleString() + " ]: " + " Waga: " + waga + " kg ; " +"Wzrost: " + wzrost+ " cm ; "  + "BMI: " + BMI.toFixed(2);
+            nowyLi.id = "klik" + licznik;
+            wynikHistorii.appendChild(nowyLi);
+
+            //dodanie do tablicy wyników z danego pomiaru
+            historiaWagi.push(waga);
+            historiaWzrostu.push(wzrost);
+            historiaBMI.push(BMI);
+
+
+            //ustawienie eventu - po kliknięciu pozycji w historii pomiarów zwraca dane z danego pomiaru do modułu wyników
+            nowyLi.addEventListener("click", function() {
+                document.querySelector(".wpisanaWaga").innerHTML = "Twoja waga:</br>" +  historiaWagi[nowyLicznik-1] + " kg";
+                document.querySelector(".wpisanyWzrost").innerHTML = "Twój wzrost:</br>" +  historiaWzrostu[nowyLicznik-1] + " cm";
+                document.querySelector(".wynikBMI").innerHTML ="Twoje BMI:</br>" + historiaBMI[nowyLicznik-1].toFixed(2);
+                document.querySelector(".zmianaBMI").innerHTML = "";
+            });
+            
+            //wyczyszczenie pól formularza
+            document.querySelector(".wagaForm").reset();
+            document.querySelector(".wzrostForm").reset();
+            
+    
+            //wyświetlenie komunikatów, gdy wprowadzone wartości nie miszczą się w dopuszczalnych przedziałach
+        }else {
+            if ((waga < 40 || waga > 200) && (wzrost < 120 || wzrost > 240)) {
+            document.querySelector(".wynikBMI").innerHTML="Wpisane dane są błędne. Popraw dane.";
+            document.querySelector(".wpisanaWaga").innerHTML = "waga nie jest poprawna";
+            document.querySelector(".wpisanyWzrost").innerHTML = "wzrost nie jest poprawny";
+            document.querySelector(".zmianaBMI").innerHTML = "";
+            
+
+            }else if (waga < 40 || waga > 200) {
+                document.querySelector(".wynikBMI").innerHTML="Wpisane dane są błędne. Popraw dane.";
+                document.querySelector(".wpisanaWaga").innerHTML = "waga nie jest poprawna";
+                document.querySelector(".zmianaBMI").innerHTML = "";
+                
+            }else if (wzrost< 120 || wzrost > 240) {
+                document.querySelector(".wynikBMI").innerHTML="Wpisane dane są błędne. Popraw dane.";
+                document.querySelector(".wpisanyWzrost").innerHTML = "wzrost nie jest poprawny";
+                document.querySelector(".zmianaBMI").innerHTML = "";
+                
+            }
+            }
+        }
+
+        //wyliczenie średniej z wyliczonych wyników BMI i wyświetlenie jej pod historią pomiarów
+    function sredniaBMI(){
+        let sumaBMI = 0;
+        let iloscWynikow = historiaBMI.length;
+
+        for (let i = 0; i < iloscWynikow; i++) {
+          sumaBMI = sumaBMI + historiaBMI[i];
+        }
+
+        let srednia = sumaBMI / iloscWynikow;
+
+        document.querySelector("#sredniaBMI").innerHTML = "Średnia Twoich wyników BMI:</br>" + srednia.toFixed(2);
+
+        if (isNaN(srednia)) {
+            document.querySelector("#sredniaBMI").innerHTML ="";
+        }
+
+    }
+    
+        przycisk.addEventListener("click", getWynikWagi);
+        przycisk.addEventListener("click", getWynikWzrost);
+        przycisk.addEventListener("click", getBMI);
+        przycisk.addEventListener("click", sredniaBMI);
+
+        </script>
+</html>
