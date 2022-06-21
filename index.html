@@ -89,6 +89,7 @@
     <div class="moduly" >
 
         <div class="modul1">
+            <h2 class = "naglowkiSekcji">Wpisz dane</h2>
             <p>Wpisz wagę (w kilogramach)</p>
             <form action="Waga" class="wagaForm">
                 <input type="number" name="wagaBMI" class="waga upiekszeniePol">
@@ -143,7 +144,7 @@
 
     //umieszczenie wagi w module wyników
     function getWynikWagi() {
-        document.querySelector(".wpisanaWaga").innerHTML ="Twoja waga:</br>" + getWaga() + " kg "; 
+        document.querySelector(".wpisanaWaga").innerHTML ="Twoja waga:</br>" + getWaga() + " kg"; 
     }
     
     //pobranie wzrostu wpisanego przez użytkownika
@@ -154,7 +155,7 @@
     
     //umieszczenie wzrostu w module wyników
     function getWynikWzrost() {
-        document.querySelector(".wpisanyWzrost").innerHTML = "Twój wzrost:</br>" + getWzrost()  + " cm ";
+        document.querySelector(".wpisanyWzrost").innerHTML = "Twój wzrost:</br>" + getWzrost()  + " cm";
         }
 
     //porównanie wyników BMI i wyświetlenie komunikatu o zmianie lub jej braku
